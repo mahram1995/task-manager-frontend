@@ -1,7 +1,9 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpParams } from "@angular/common/http";
-import { Task, TaskPayload, Note, Page } from "../models";
-import { BASE_URL } from "../environment/environment";
+
+import { BASE_URL } from "../../core/environment/environment";
+import { Note, Page, Task, TaskPayload } from "../../core/models";
+
 const API = BASE_URL + "api/tasks";
 @Injectable({ providedIn: "root" })
 export class TaskService {

@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { TaskService } from "../../core/services/task.service";
+import { TaskService } from "../service/task.service";
 import { TaskPayload } from "../../core/models";
 @Component({
   selector: "app-task-form",

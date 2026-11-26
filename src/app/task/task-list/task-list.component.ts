@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { TaskService } from "../../core/services/task.service";
 import { Task } from "../../core/models";
+import { TaskService } from "../service/task.service";
 @Component({
   selector: "app-task-list",
   templateUrl: "./task-list.component.html",

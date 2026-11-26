@@ -8,11 +8,14 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AuthInterceptor } from "./core/interceptors/auth.interceptor";
 import { NavbarComponent } from "./core/topbar/navbar.component";
 import { SidebarComponent } from "./core/sidebar/sidebar.component";
-import { RouterOutlet } from "@angular/router";
+
 @NgModule({
-  declarations: [AppComponent,
+  declarations: [
+    AppComponent,
     SidebarComponent,
-     NavbarComponent],
+  
+    NavbarComponent,
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
