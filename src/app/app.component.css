@@ -1,0 +1,16 @@
+.main-content {
+  min-height: 100vh;
+  padding-top: 5px;
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
+}
+
+.main-content.sidebar-open {
+  margin-left: 250px;
+}
+
+@media (max-width: 600px) {
+  .main-content.sidebar-open {
+    margin-left: 0;
+  }
+}

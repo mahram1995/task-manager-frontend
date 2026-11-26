@@ -1,0 +1,25 @@
+<div class="page" *ngIf="task">
+    <div class="toolbar">
+        <h2>Task Details</h2>
+        <div class="actions"><button pButton label="Notes" (click)="notes()"></button><button pButton label="Back"
+                severity="secondary" (click)="back()"></button></div>
+    </div>
+    <div class="stat">
+        <h3>{{task.taskName}}</h3>
+        <p>{{task.description}}</p>
+        <div class="form-grid">
+            <p><b>Client:</b> {{task.client||'—'}}</p>
+            <p><b>Created by:</b> {{task.createBy}}</p>
+            <p><b>Created:</b> {{task.createDate}}</p>
+            <p><b>Priority:</b> {{task.priority}}</p>
+            <p><b>Development:</b> {{task.devStatus}}</p>
+            <p><b>Delivery:</b> {{task.deliveryStatus}}</p>
+            <p><b>Expected start:</b> {{task.expectedStartDate||'—'}}</p>
+            <p><b>Actual start:</b> {{task.actualStartDate||'—'}}</p>
+            <p><b>Expected end:</b> {{task.expectedEndDate||'—'}}</p>
+            <p><b>Actual end:</b> {{task.actualEndDate||'—'}}</p>
+            <p><b>Expected delivery:</b> {{task.expectedDeliveryDate||'—'}}</p>
+            <p><b>Actual delivery:</b> {{task.deliveryDate||'—'}}</p>
+        </div>
+    </div>
+</div>

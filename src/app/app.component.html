@@ -1,0 +1,16 @@
+<ng-container *ngIf="auth.loggedIn">
+  <app-navbar
+    (toggleSidebar)="toggleSidebar()"
+  ></app-navbar>
+
+  <app-sidebar
+    [visible]="isSidebarOpen"
+  ></app-sidebar>
+</ng-container>
+
+<main
+  [class.main-content]="auth.loggedIn"
+  [class.sidebar-open]="auth.loggedIn && isSidebarOpen"
+>
+  <router-outlet></router-outlet>
+</main>

@@ -1,0 +1,39 @@
+<aside class="sidebar" [class.sidebar-hidden]="!visible">
+    <div class="sidebar-menu">
+        <ng-container *ngFor="let menu of menus">
+
+            <!-- Parent menu with children -->
+            <div *ngIf="menu.children?.length" class="menu-group">
+                <button class="menu-item parent-menu" type="button" (click)="toggleMenu(menu.label)"
+                    [class.menu-expanded]="expandedMenu === menu.label">
+                    <span class="menu-icon">{{ menu.icon }}</span>
+                    <span class="menu-label">{{ menu.label }}</span>
+
+                    <span class="menu-arrow">
+                        <i *ngIf="expandedMenu === menu.label" class="pi pi-angle-down"></i>
+                        <i *ngIf="expandedMenu !== menu.label" class="pi pi-angle-right"></i>
+                    </span>
+                </button>
+
+                <!-- Child menu -->
+                <div class="submenu" *ngIf="expandedMenu === menu.label">
+                    <a *ngFor="let child of menu.children" class="menu-item child-menu" [routerLink]="child.route"
+                        routerLinkActive="active">
+
+                        <span class="menu-icon">
+                            <i [ngClass]="'pi pi-' + child.icon"></i>
+                        </span>
+                        <span class="menu-label">{{ child.label }}</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Direct menu without children -->
+            <a *ngIf="!menu.children?.length" class="menu-item" [routerLink]="menu.route" routerLinkActive="active">
+                <span class="menu-icon">{{ menu.icon }}</span>
+                <span class="menu-label">{{ menu.label }}</span>
+            </a>
+
+        </ng-container>
+    </div>
+</aside>

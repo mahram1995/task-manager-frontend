@@ -1,0 +1,62 @@
+{
+    "name": "daily-task-manager",
+    "version": 1,
+    "newProjectRoot": "projects",
+    "projects": {
+        "daily-task": {
+            "projectType": "application",
+            "root": "",
+            "sourceRoot": "src",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:application",
+                    "options": {
+                        "outputPath": "dist/daily-task",
+                        "index": "src/index.html",
+                        "browser": "src/main.ts",
+                        "polyfills": [
+                            "zone.js"
+                        ],
+                        "tsConfig": "tsconfig.app.json",
+                        "styles": [
+                            "node_modules/primeicons/primeicons.css",
+                            "src/styles.css"
+                        ],
+                        "scripts": []
+                    },
+                    "configurations": {
+                        "production": {
+                            "optimization": true,
+                            "outputHashing": "all"
+                        },
+                        "development": {
+                            "optimization": false,
+                            "extractLicenses": false,
+                            "sourceMap": true
+                        }
+                    },
+                    "defaultConfiguration": "development"
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "options": {
+                        "host": "0.0.0.0",
+                        "port": 4300
+                    },
+                    "configurations": {
+                        "production": {
+                            "buildTarget": "daily-task:build:production"
+                        },
+                        "development": {
+                            "buildTarget": "daily-task:build:development"
+                        }
+                    },
+                    "defaultConfiguration": "development"
+                }
+            }
+        }
+    },
+    "cli": {
+        "analytics": false
+    }
+}

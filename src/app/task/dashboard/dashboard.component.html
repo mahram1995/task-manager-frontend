@@ -1,0 +1,35 @@
+<div class="page">
+    <div class="toolbar">
+        <div>
+            <h2>Dashboard</h2><span class="muted">Daily development overview</span>
+        </div>
+        <div class="actions"><button pButton label="Manage Tasks" (click)="go()"></button><button pButton label="Logout"
+                severity="secondary" (click)="logout()"></button></div>
+    </div>
+    <div class="stats">
+        <div class="stat"><span class="muted">Total tasks</span>
+            <h2>{{total}}</h2>
+        </div>
+        <div class="stat"><span class="muted">Pending</span>
+            <h2>{{pending}}</h2>
+        </div>
+        <div class="stat"><span class="muted">In progress</span>
+            <h2>{{progress}}</h2>
+        </div>
+        <div class="stat"><span class="muted">Completed</span>
+            <h2>{{completed}}</h2>
+        </div>
+        <div class="stat"><span class="muted">Delayed</span>
+            <h2>{{delayed}}</h2>
+        </div>
+        <div class="stat"><span class="muted">High / Critical</span>
+            <h2>{{high}}</h2>
+        </div>
+    </div>
+    <div class="stat" style="margin-top:1rem">
+        <h3>Recent tasks</h3>
+        <div *ngFor="let t of tasks.slice(0,8)" class="toolbar"><span>{{t.taskName}}</span><span
+                class="muted">{{t.devStatus}} · {{t.priority}}</span></div>
+        <p *ngIf="!tasks.length" class="muted">No tasks have been created.</p>
+    </div>
+</div>

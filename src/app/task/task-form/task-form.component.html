@@ -1,0 +1,41 @@
+<div class="page">
+    <div class="toolbar">
+        <h2>{{id?'Edit':'Create'}} Task</h2><button pButton label="Back" severity="secondary"
+            (click)="cancel()"></button>
+    </div>
+    <form [formGroup]="form" (ngSubmit)="save()" class="form-grid">
+        <div class="field"><label>Task name *</label><input pInputText formControlName="taskName"><small
+                *ngIf="form.controls.taskName.touched&&form.controls.taskName.invalid">Task name is required (max 200
+                characters).</small></div>
+        <div class="field"><label>Client</label><input pInputText formControlName="client"></div>
+        <div class="field full"><label>Description</label><textarea rows="3" formControlName="description"></textarea>
+        </div>
+        <div class="field"><label>Development status</label><select formControlName="devStatus">
+                <option value="PENDING">Pending</option>
+                <option value="IN_PROGRESS">In Progress</option>
+                <option value="ON_HOLD">On Hold</option>
+                <option value="COMPLETED">Completed</option>
+            </select></div>
+        <div class="field"><label>Priority</label><select formControlName="priority">
+                <option value="LOW">Low</option>
+                <option value="NORMAL">Normal</option>
+                <option value="HIGH">High</option>
+                <option value="CRITICAL">Critical</option>
+            </select></div>
+        <div class="field"><label>Delivery status</label><select formControlName="deliveryStatus">
+                <option value="PENDING">Pending</option>
+                <option value="DELIVERED">Delivered</option>
+                <option value="DELAYED">Delayed</option>
+            </select></div>
+        <div class="field"><label>Expected delivery date</label><input type="date"
+                formControlName="expectedDeliveryDate"></div>
+        <div class="field"><label>Actual delivery date</label><input type="date" formControlName="deliveryDate"></div>
+        <div class="field"><label>Expected start date</label><input type="date" formControlName="expectedStartDate">
+        </div>
+        <div class="field"><label>Actual start date</label><input type="date" formControlName="actualStartDate"></div>
+        <div class="field"><label>Expected end date</label><input type="date" formControlName="expectedEndDate"></div>
+        <div class="field"><label>Actual end date</label><input type="date" formControlName="actualEndDate"></div>
+        <div class="actions full"><button pButton type="submit" label="Save Task"></button><button pButton type="button"
+                label="Cancel" severity="secondary" (click)="cancel()"></button></div>
+    </form>
+</div>
