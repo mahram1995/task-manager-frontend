@@ -1,7 +1,9 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { tap } from "rxjs";
-import { BASE_URL } from "../environment/environment";
+import { Environment } from "../../core/environment/environment";
+
+export const BASE_URL = Environment.BASE_URL;
 
 const API = BASE_URL + "api";
 

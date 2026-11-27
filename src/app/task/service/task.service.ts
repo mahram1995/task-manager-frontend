@@ -1,13 +1,14 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpParams } from "@angular/common/http";
 
-import { BASE_URL } from "../../core/environment/environment";
 import { Note, Page, Task, TaskPayload } from "../../core/models";
 import { BaseService, PathParameters } from "../../core/services/base.service";
 import { HttpService } from "../../core/services/http.service";
 import { Observable } from "rxjs";
+import { Environment } from "../../core/environment/environment";
 
-const API = BASE_URL + "api/tasks";
+export const BASE_URL = Environment.BASE_URL;
+
 
 const FETCH_TASK = BASE_URL + "api/tasks/get-all";
 const FETCH_TASK_BY_ID = BASE_URL + "api/tasks/get/{taskId}";
