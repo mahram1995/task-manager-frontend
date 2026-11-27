@@ -13,3 +13,29 @@
   border-radius: 6px;
   background: white;
 }
+tr,th{
+  font-size: 14px;
+}
+
+
+:host ::ng-deep .p-datatable table {
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+}
+
+:host ::ng-deep .p-datatable th,
+:host ::ng-deep .p-datatable td {
+    border: 1px solid #dee2e6 !important;
+}
+
+
+p-table td span:last-child {
+  color: #475569;
+}
+p-table  tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+p-table  tr:nth-child(even) {
+    background-color: #eaeff5;
+}

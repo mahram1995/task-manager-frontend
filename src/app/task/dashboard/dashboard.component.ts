@@ -15,14 +15,20 @@ export class DashboardComponent implements OnInit {
   completed = 0;
   delayed = 0;
   high = 0;
+  urlSearchMap: Map<string, any> = new Map();
+
   constructor(
-    private api: TaskService,
+    private taskService: TaskService,
     private router: Router,
   ) {}
   ngOnInit() {
-    this.api.list({}, 0, 20).subscribe((r) => {
-      this.tasks = r.content;
-      this.total = r.totalElements;
+    this.fetchTask();
+  }
+
+  fetchTask() {
+    this.taskService.fetchTask(this.urlSearchMap).subscribe((data) => {
+      this.tasks = data.content;
+      this.total = data.totalElements;
       this.pending = this.tasks.filter((t) => t.devStatus === "PENDING").length;
       this.progress = this.tasks.filter(
         (t) => t.devStatus === "IN_PROGRESS",
@@ -38,12 +44,5 @@ export class DashboardComponent implements OnInit {
       ).length;
     });
   }
-  go() {
-    this.router.navigate(["/tasks"]);
-  }
-  logout() {
-    localStorage.removeItem("jwt");
-    localStorage.removeItem("userName");
-    this.router.navigate(["/login"]);
-  }
+
 }

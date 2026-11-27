@@ -1,268 +1,247 @@
-import { Inject, Injectable, InjectionToken, Injector, Optional } from '@angular/core';
-import { HttpClient, HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpHeaders, HttpParams } from '@angular/common/http';
+import {
+  Inject,
+  Injectable,
+  InjectionToken,
+  Injector,
+  Optional,
+} from "@angular/core";
+import {
+  HttpClient,
+  HttpEvent,
+  HttpInterceptor,
+  HttpHandler,
+  HttpRequest,
+  HttpHeaders,
+  HttpParams,
+} from "@angular/common/http";
 import { Observable, timer } from "rxjs";
-import { finalize } from 'rxjs/operators';
-import { HttpServiceInterface, IRequestOptions } from './http.service.interface';
-import { CommonService } from './common.service';
-import { LoaderOverlayService } from './loader.overlay.service';
+import { finalize } from "rxjs/operators";
+import {
+  HttpServiceInterface,
+  IRequestOptions,
+} from "./http.service.interface";
+import { CommonService } from "./common.service";
+import { LoaderOverlayService } from "./loader.overlay.service";
+import { AuthService } from "./auth.service";
 
-
-export const HTTP_DYNAMIC_INTERCEPTORS = new InjectionToken<HttpInterceptor>('HTTP_DYNAMIC_INTERCEPTORS');
+export const HTTP_DYNAMIC_INTERCEPTORS = new InjectionToken<HttpInterceptor>(
+  "HTTP_DYNAMIC_INTERCEPTORS",
+);
 
 @Injectable()
 export class HttpService extends HttpClient implements HttpServiceInterface {
+  userInfo: any;
+  public requestsPending: number = 0;
+  public loaderVisble: boolean = false;
 
-    userInfo: any;
-    public requestsPending: number = 0;
-    public loaderVisble: boolean = false;
+  constructor(
+    private httpHandler: HttpHandler,
+    private authService: AuthService,
+    private commonService: CommonService,
+    @Optional()
+    @Inject(HTTP_DYNAMIC_INTERCEPTORS)
+    private interceptors: HttpInterceptor[] = [],
+    private loaderOverlayService: LoaderOverlayService,
+  ) {
+    super(httpHandler);
+  }
 
+  getHttpHeaderBackup(urlSearchParam: any, data: any): any {
+    let token = this.authService.token;
+    let responseType;
+    let headers = new HttpHeaders().set("Authorization", `Bearer ${token}`);
 
-    constructor(
-        private httpHandler: HttpHandler,
-        private commonService: CommonService,
-        @Optional() @Inject(HTTP_DYNAMIC_INTERCEPTORS) private interceptors: HttpInterceptor[] = [],
-        private loaderOverlayService: LoaderOverlayService,
+    let httpParams = new HttpParams();
 
-
-    ) {
-        super(httpHandler);
+    if (!(data instanceof FormData)) {
+      headers = headers.set("Content-Type", "application/json");
     }
 
-    getToken(): string | null {
-        const user = sessionStorage.getItem('user');
-        if (!user) {
-            console.warn('No user found in sessionStorage.');
-            return null;
-        }
-        try {
-            const userInfo = JSON.parse(user);
-            return userInfo?.token || null;
-        } catch (error) {
-            console.error('Failed to parse user JSON:', error);
-            return null;
-        }
-    }
-
-    getHttpHeaderBackup(urlSearchParam: any, data: any): any {
-        let token = this.getToken();
-        let responseType;
-        let headers = new HttpHeaders()
-            .set('Authorization', `Bearer ${token}`)
-
-        let httpParams = new HttpParams();
-
-        if (!(data instanceof FormData)) {
-            headers = headers.set('Content-Type', 'application/json');
-        }
-
-        if (urlSearchParam) {
-            if (data === null) {
-                // Add query params
-                if (urlSearchParam && urlSearchParam instanceof Map) {
-                    urlSearchParam.forEach((value: any, key: string) => {
-                        if (value !== null && value !== undefined) {
-                            httpParams = httpParams.set(key, value); // dynamically add param
-                        }
-                    });
-                }
-            } else {
-                // Optional: Add special headers
-                const taskId = urlSearchParam.get("taskId");
-                if (taskId != null) {
-                    headers = headers.set('taskId', taskId);
-                }
-                const verifier = urlSearchParam.get("verifier");
-                if (verifier != null) {
-                    headers = headers.set('verifier', verifier);
-                }
-                const maker = urlSearchParam.get("maker");
-                if (maker != null) {
-                    headers = headers.set('maker', maker);
-                }
-                const detailsUI = urlSearchParam.get("detailsUI");
-                if (detailsUI != null) {
-                    headers = headers.set('detailsUI', detailsUI);
-                }
-                const correctionUI = urlSearchParam.get("correctionUI");
-                if (correctionUI != null) {
-                    headers = headers.set('correctionUI', correctionUI);
-                }
-                responseType = urlSearchParam.get("responseType");
-
+    if (urlSearchParam) {
+      if (data === null) {
+        // Add query params
+        if (urlSearchParam && urlSearchParam instanceof Map) {
+          urlSearchParam.forEach((value: any, key: string) => {
+            if (value !== null && value !== undefined) {
+              httpParams = httpParams.set(key, value); // dynamically add param
             }
-            const terminalIp = this.commonService.getClientIp();
-            if (terminalIp) {
-                headers = headers.set('terminalIp', terminalIp);
-            }
+          });
         }
-
-
-
-        return {
-            headers: headers,
-            params: httpParams,
-            responseType: responseType ? responseType : 'json'
-        };
-    }
-
-
-    getHttpHeader(urlSearchParam: any, data: any): any {
-
-        const token = this.getToken();
-        let responseType = 'json';
-
-        let headers = new HttpHeaders()
-            .set('Authorization', `Bearer ${token}`);
-
-        let httpParams = new HttpParams();
-
-        if (!(data instanceof FormData)) {
-            headers = headers.set('Content-Type', 'application/json');
+      } else {
+        // Optional: Add special headers
+        const taskId = urlSearchParam.get("taskId");
+        if (taskId != null) {
+          headers = headers.set("taskId", taskId);
         }
-
-        if (urlSearchParam) {
-
-            // Read responseType for both GET and other requests
-            if (urlSearchParam instanceof Map) {
-                const requestedResponseType = urlSearchParam.get('responseType');
-
-                if (requestedResponseType) {
-                    responseType = requestedResponseType;
-                }
-            }
-
-            if (data === null) {
-
-                // Add query parameters, excluding responseType
-                if (urlSearchParam instanceof Map) {
-                    urlSearchParam.forEach((value: any, key: string) => {
-
-                        if (
-                            key !== 'responseType' &&
-                            value !== null &&
-                            value !== undefined
-                        ) {
-                            httpParams = httpParams.set(key, value);
-                        }
-
-                    });
-                }
-
-            } else {
-
-                const taskId = urlSearchParam.get('taskId');
-                if (taskId != null) {
-                    headers = headers.set('taskId', taskId);
-                }
-
-                const verifier = urlSearchParam.get('verifier');
-                if (verifier != null) {
-                    headers = headers.set('verifier', verifier);
-                }
-
-                const maker = urlSearchParam.get('maker');
-                if (maker != null) {
-                    headers = headers.set('maker', maker);
-                }
-
-                const detailsUI = urlSearchParam.get('detailsUI');
-                if (detailsUI != null) {
-                    headers = headers.set('detailsUI', detailsUI);
-                }
-
-                const correctionUI = urlSearchParam.get('correctionUI');
-                if (correctionUI != null) {
-                    headers = headers.set('correctionUI', correctionUI);
-                }
-            }
-
-            const terminalIp = this.commonService.getClientIp();
-
-            if (terminalIp) {
-                headers = headers.set('terminalIp', terminalIp);
-            }
+        const verifier = urlSearchParam.get("verifier");
+        if (verifier != null) {
+          headers = headers.set("verifier", verifier);
         }
-
-        return {
-            headers: headers,
-            params: httpParams,
-            responseType: responseType
-        };
-    }
-
-    public override get(url: string, options?: any): Observable<any> {
-        this.showLoadingModal();
-        const mergedOptions = this.getHttpHeader(options?.params, null);
-
-        return this.interceptRequest(super.get(url, {
-            ...mergedOptions,
-            ...options, // keep responseType, etc.
-            headers: mergedOptions.headers, // overwrite headers properly
-            params: mergedOptions.params    // overwrite params properly
-        }));
-    }
-
-    public override post(url: string, data: any, options?: any): Observable<any> {
-        this.showLoadingModal();
-        return this.interceptRequest(super.post(url, data, this.getHttpHeader(options, data)));
-    }
-
-    public postWithoutLoading(url: string, data: any, options?: any): Observable<any> {
-        return super.post(url, data, this.getHttpHeader(options, data));
-    }
-
-
-
-    public override put(url: string, data: any, options?: any): Observable<any> {
-        this.showLoadingModal();
-        return this.interceptRequest(super.put(url, data, this.getHttpHeader(options, data)));
-    }
-
-    public override delete(url: string, options?: any): Observable<any> {
-        this.showLoadingModal();
-        return this.interceptRequest(super.delete(url, this.userInfo));
-    }
-
-    public override patch(url: string, body: any, options?: IRequestOptions): Observable<any> {
-        this.showLoadingModal();
-        return this.interceptRequest(super.patch(url, body, this.userInfo));
-    }
-
-    public override head(url: string, options?: IRequestOptions): Observable<any> {
-        return super.head(url, this.userInfo);
-    }
-
-    public override options(url: string, options?: IRequestOptions): Observable<any> {
-        return super.options(url, this.userInfo);
-    }
-
-    interceptRequest(observable: Observable<any>): Observable<any> {
-        this.requestsPending++;
-        return observable
-            .pipe(
-                finalize(() => {
-                    timer(200).subscribe(t => this.hideLoadingModal());
-                })
-            );
-    }
-
-    showLoadingModal() {
-        if (!this.loaderVisble) {
-            this.loaderVisble = true;
-            this.loaderOverlayService.show(true);
+        const maker = urlSearchParam.get("maker");
+        if (maker != null) {
+          headers = headers.set("maker", maker);
         }
+        const detailsUI = urlSearchParam.get("detailsUI");
+        if (detailsUI != null) {
+          headers = headers.set("detailsUI", detailsUI);
+        }
+        const correctionUI = urlSearchParam.get("correctionUI");
+        if (correctionUI != null) {
+          headers = headers.set("correctionUI", correctionUI);
+        }
+        responseType = urlSearchParam.get("responseType");
+      }
+      const terminalIp = this.commonService.getClientIp();
+      if (terminalIp) {
+        headers = headers.set("terminalIp", terminalIp);
+      }
     }
 
-    hideLoadingModal() {
-        this.requestsPending--;
-        if (this.requestsPending <= 0) {
-            if (this.loaderVisble) {
-                this.loaderOverlayService.show(false);
+    return {
+      headers: headers,
+      params: httpParams,
+      responseType: responseType ? responseType : "json",
+    };
+  }
+
+  getHttpHeader(urlSearchParam: any, data: any): any {
+    const token = this.authService.token;
+    let responseType = "json";
+
+    let headers = new HttpHeaders().set("Authorization", `Bearer ${token}`);
+
+    let httpParams = new HttpParams();
+
+    if (!(data instanceof FormData)) {
+      headers = headers.set("Content-Type", "application/json");
+    }
+
+    if (urlSearchParam) {
+      // Read responseType for both GET and other requests
+      if (urlSearchParam instanceof Map) {
+        const requestedResponseType = urlSearchParam.get("responseType");
+
+        if (requestedResponseType) {
+          responseType = requestedResponseType;
+        }
+      }
+
+      if (data === null) {
+        // Add query parameters, excluding responseType
+        if (urlSearchParam instanceof Map) {
+          urlSearchParam.forEach((value: any, key: string) => {
+            if (
+              key !== "responseType" &&
+              value !== null &&
+              value !== undefined
+            ) {
+              httpParams = httpParams.set(key, value);
             }
-            this.loaderVisble = false;
+          });
         }
+      }
+
+      const terminalIp = this.commonService.getClientIp();
+
+      if (terminalIp) {
+        headers = headers.set("terminalIp", terminalIp);
+      }
     }
 
+    return {
+      headers: headers,
+      params: httpParams,
+      responseType: responseType,
+    };
+  }
 
+  public override get(url: string, options?: any): Observable<any> {
+    this.showLoadingModal();
+    const mergedOptions = this.getHttpHeader(options?.params, null);
 
+    return this.interceptRequest(
+      super.get(url, {
+        ...mergedOptions,
+        ...options, // keep responseType, etc.
+        headers: mergedOptions.headers, // overwrite headers properly
+        params: mergedOptions.params, // overwrite params properly
+      }),
+    );
+  }
+
+  public override post(url: string, data: any, options?: any): Observable<any> {
+    this.showLoadingModal();
+    return this.interceptRequest(
+      super.post(url, data, this.getHttpHeader(options, data)),
+    );
+  }
+
+  public postWithoutLoading(
+    url: string,
+    data: any,
+    options?: any,
+  ): Observable<any> {
+    return super.post(url, data, this.getHttpHeader(options, data));
+  }
+
+  public override put(url: string, data: any, options?: any): Observable<any> {
+    this.showLoadingModal();
+    return this.interceptRequest(
+      super.put(url, data, this.getHttpHeader(options, data)),
+    );
+  }
+
+  public override delete(url: string, options?: any): Observable<any> {
+    this.showLoadingModal();
+    return this.interceptRequest(super.delete(url, this.userInfo));
+  }
+
+  public override patch(
+    url: string,
+    body: any,
+    options?: IRequestOptions,
+  ): Observable<any> {
+    this.showLoadingModal();
+    return this.interceptRequest(super.patch(url, body, this.userInfo));
+  }
+
+  public override head(
+    url: string,
+    options?: IRequestOptions,
+  ): Observable<any> {
+    return super.head(url, this.userInfo);
+  }
+
+  public override options(
+    url: string,
+    options?: IRequestOptions,
+  ): Observable<any> {
+    return super.options(url, this.userInfo);
+  }
+
+  interceptRequest(observable: Observable<any>): Observable<any> {
+    this.requestsPending++;
+    return observable.pipe(
+      finalize(() => {
+        timer(200).subscribe((t) => this.hideLoadingModal());
+      }),
+    );
+  }
+
+  showLoadingModal() {
+    if (!this.loaderVisble) {
+      this.loaderVisble = true;
+      this.loaderOverlayService.show(true);
+    }
+  }
+
+  hideLoadingModal() {
+    this.requestsPending--;
+    if (this.requestsPending <= 0) {
+      if (this.loaderVisble) {
+        this.loaderOverlayService.show(false);
+      }
+      this.loaderVisble = false;
+    }
+  }
 }

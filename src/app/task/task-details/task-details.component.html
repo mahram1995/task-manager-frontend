@@ -1,25 +1,43 @@
 <div class="page" *ngIf="task">
-    <div class="toolbar">
+    <div>
         <h2>Task Details</h2>
-        <div class="actions"><button pButton label="Notes" (click)="notes()"></button><button pButton label="Back"
-                severity="secondary" (click)="back()"></button></div>
+        
     </div>
-    <div class="stat">
-        <h3>{{task.taskName}}</h3>
-        <p>{{task.description}}</p>
-        <div class="form-grid">
-            <p><b>Client:</b> {{task.client||'—'}}</p>
-            <p><b>Created by:</b> {{task.createBy}}</p>
-            <p><b>Created:</b> {{task.createDate}}</p>
-            <p><b>Priority:</b> {{task.priority}}</p>
-            <p><b>Development:</b> {{task.devStatus}}</p>
-            <p><b>Delivery:</b> {{task.deliveryStatus}}</p>
-            <p><b>Expected start:</b> {{task.expectedStartDate||'—'}}</p>
-            <p><b>Actual start:</b> {{task.actualStartDate||'—'}}</p>
-            <p><b>Expected end:</b> {{task.expectedEndDate||'—'}}</p>
-            <p><b>Actual end:</b> {{task.actualEndDate||'—'}}</p>
-            <p><b>Expected delivery:</b> {{task.expectedDeliveryDate||'—'}}</p>
-            <p><b>Actual delivery:</b> {{task.deliveryDate||'—'}}</p>
+    <div>
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+            <p style="font-weight: bold; margin: 0; white-space: nowrap;">Task Name:</p>
+            <p style="background-color: white; padding: 10px; flex: 1; margin: 0;">{{task.taskName}}</p>
         </div>
+        
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+            <p style="font-weight: bold; margin: 0; white-space: nowrap;">Description:</p>
+            <p style="background-color: white; padding: 10px; flex: 1; margin: 0;">{{task.description}}</p>
+        </div>
+        <table class="details-table">
+            <tbody>
+                <tr>
+                    <td><b>Client</b><span class="colon">:</span><span>{{task.client || '—'}}</span></td>
+                    <td><b>Created by</b><span class="colon">:</span><span>{{task.createBy || '—'}}</span></td>
+                    <td><b>Created</b><span class="colon">:</span><span>{{task.createDate || '—'}}</span></td>
+                </tr>
+                <tr>
+                    <td><b>Priority</b><span class="colon">:</span><span>{{task.priority || '—'}}</span></td>
+                    <td><b>Development</b><span class="colon">:</span><span>{{task.devStatus || '—'}}</span></td>
+                    <td><b>Delivery</b><span class="colon">:</span><span>{{task.deliveryStatus || '—'}}</span></td>
+                </tr>
+                <tr>
+                    <td><b>Expected start</b><span class="colon">:</span><span>{{task.expectedStartDate || '—'}}</span>
+                    </td>
+                    <td><b>Actual start</b><span class="colon">:</span><span>{{task.actualStartDate || '—'}}</span></td>
+                    <td><b>Expected end</b><span class="colon">:</span><span>{{task.expectedEndDate || '—'}}</span></td>
+                </tr>
+                <tr>
+                    <td><b>Actual end</b><span class="colon">:</span><span>{{task.actualEndDate || '—'}}</span></td>
+                    <td><b>Expected delivery</b><span class="colon">:</span><span>{{task.expectedDeliveryDate ||
+                            '—'}}</span></td>
+                    <td><b>Actual delivery</b><span class="colon">:</span><span>{{task.deliveryDate || '—'}}</span></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>

@@ -20,23 +20,30 @@ export class TaskListComponent implements OnInit {
     devStatus: "",
     deliveryStatus: "",
   };
+
+  urlSearchMap: Map<string, any> = new Map();
   constructor(
-    private api: TaskService,
+    private taskService: TaskService,
     private router: Router,
   ) {}
   ngOnInit() {
-    this.load();
+    this.fetchTask(null);
   }
-  load() {
-    this.api.list(this.filters, this.page, this.size).subscribe((r) => {
-      this.rows = r.content;
-      this.total = r.totalElements;
-      this.totalPages = r.totalPages || 1;
+
+  fetchTask(urlSearchMap: any) {
+    this.urlSearchMap.set("size", this.size);
+    this.urlSearchMap.set("sort", "createDate,desc");
+    this.urlSearchMap.set("filters", this.filters);
+    this.taskService.fetchTask(this.urlSearchMap).subscribe((data) => {
+      this.rows = data.content;
+      this.totalPages = data.totalElements;
+      this.totalPages = data.totalPages;
     });
   }
+
   search() {
     this.page = 0;
-    this.load();
+    this.fetchTask(null);
   }
   edit(t: Task) {
     this.router.navigate(["/tasks/edit", t.id]);
@@ -47,16 +54,19 @@ export class TaskListComponent implements OnInit {
   notes(t: Task) {
     this.router.navigate(["/tasks/notes", t.id]);
   }
+
   remove(t: Task) {
-    if (confirm("Delete this task?"))
-      this.api.delete(t.id).subscribe(() => this.load());
+    //  if (confirm("Delete this task?"))  this.api.delete(t.id).subscribe(() => this.load());
   }
+
   next(delta: number) {
     this.page = Math.max(
       0,
       Math.min(Math.ceil(this.total / this.size) - 1, this.page + delta),
     );
-    this.load();
+    this.urlSearchMap.set("page", this.page);
+
+    this.fetchTask(this.urlSearchMap);
   }
   create() {
     this.router.navigate(["/tasks/create"]);

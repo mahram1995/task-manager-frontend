@@ -1,7 +1,6 @@
 <div class="page">
     <div class="toolbar">
         <div>
-            <h2>Tasks</h2><span class="muted">Manage development work</span>
         </div><button pButton label="New Task" icon="pi pi-plus" (click)="create()"></button>
     </div>
     <div class="stats" style="margin-bottom:1rem">
@@ -29,36 +28,60 @@
                 <option>DELIVERED</option>
                 <option>DELAYED</option>
             </select></div><button pButton label="Filter" (click)="search()"></button>
-    </div><p-table [value]="rows" [tableStyle]="{'min-width':'65rem'}"><ng-template pTemplate="header">
+    </div>
+    <p-table [value]="rows" [tableStyle]="{'min-width':'65rem'}"><ng-template pTemplate="header">
             <tr>
-                <th>Task</th>
+                <th style="width: 300px;">Task</th>
                 <th>Client</th>
+                <th style="width: 60px;">Internal MITS</th>
+                <th style="width: 60px;">Extarnla MITS</th>
                 <th>Priority</th>
-                <th>Development</th>
-                <th>Delivery</th>
+                <th>Development Status</th>
+                <th>Product</th>
+                <th>Developer</th>
+                <th>Tasks Category</th>
+                <th>Referred Sprint</th>
+                <th>Remarks</th>
+                <th>Delivery Status</th>
+                <th>Point</th>
                 <th>Expected delivery</th>
-                <th>Actions</th>
+                <th style="width:90px;">Actions</th>
             </tr>
         </ng-template><ng-template pTemplate="body" let-t>
             <tr>
                 <td>{{t.taskName}}</td>
                 <td>{{t.client}}</td>
+                <td></td>
+                <td></td>
                 <td>{{t.priority}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
                 <td>{{t.devStatus}}</td>
                 <td>{{t.deliveryStatus}}</td>
                 <td>{{t.expectedDeliveryDate||'—'}}</td>
                 <td>
-                    <div class="actions"><button pButton label="View" size="small" (click)="details(t)"></button><button
-                            pButton label="Edit" size="small" severity="secondary" (click)="edit(t)"></button><button
-                            pButton label="Notes" size="small" severity="info" (click)="notes(t)"></button><button
-                            pButton label="Delete" size="small" severity="danger" (click)="remove(t)"></button></div>
+                    <div class="actions">
+                        <button pButton icon="pi pi-eye" size="small" severity="primary" pTooltip="View"
+                            (click)="details(t)"></button>
+                        <button pButton icon="pi pi-pencil" size="small" severity="secondary" pTooltip="Edit"
+                            (click)="edit(t)"></button>
+                        <button pButton icon="pi pi-comments" size="small" severity="info" pTooltip="Notes"
+                            (click)="notes(t)"></button>
+                        <button pButton icon="pi pi-trash" size="small" severity="danger" pTooltip="Delete"
+                            (click)="remove(t)"></button>
+                    </div>
                 </td>
             </tr>
         </ng-template><ng-template pTemplate="emptymessage">
             <tr>
                 <td colspan="7">No tasks found.</td>
             </tr>
-        </ng-template></p-table>
+        </ng-template>
+    </p-table>
     <div class="toolbar" style="margin-top:1rem"><span>{{total}} task(s) · Page {{page+1}} of {{totalPages}}</span>
         <div class="actions"><button pButton label="Previous" severity="secondary" [disabled]="page===0"
                 (click)="next(-1)"></button><button pButton label="Next" severity="secondary"

@@ -3,9 +3,9 @@
         <h2>{{id?'Edit':'Create'}} Task</h2><button pButton label="Back" severity="secondary"
             (click)="cancel()"></button>
     </div>
-    <form [formGroup]="form" (ngSubmit)="save()" class="form-grid">
+    <form [formGroup]="taskForm" (ngSubmit)="save()" class="form-grid">
         <div class="field"><label>Task name *</label><input pInputText formControlName="taskName"><small
-                *ngIf="form.controls.taskName.touched&&form.controls.taskName.invalid">Task name is required (max 200
+                *ngIf="taskForm.controls.taskName.touched&&taskForm.controls.taskName.invalid">Task name is required (max 200
                 characters).</small></div>
         <div class="field"><label>Client</label><input pInputText formControlName="client"></div>
         <div class="field full"><label>Description</label><textarea rows="3" formControlName="description"></textarea>

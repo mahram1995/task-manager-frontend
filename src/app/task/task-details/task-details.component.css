@@ -1,0 +1,35 @@
+.details-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.details-table td {
+  border: 1px solid #d1d5db;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.details-table td b {
+  display: inline-block;
+  width: 125px;
+  font-weight: 600;
+}
+
+.details-table .colon {
+  display: inline-block;
+  width: 15px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.details-table td span:last-child {
+  color: #475569;
+}
+.details-table tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+.details-table tbody tr:nth-child(even) {
+    background-color: #f1f5f9;
+}

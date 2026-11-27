@@ -15,7 +15,7 @@ export type DeliveryStatus =
   | 'DELIVERED'
   | 'DELAYED';
 
-export interface Task {
+export class Task {
   id: number;
   taskName: string;
   description: string;
@@ -33,7 +33,7 @@ export interface Task {
   deliveryStatus: DeliveryStatus;
 }
 
-export interface TaskPayload {
+export class TaskPayload {
   taskName: string;
   description: string;
   client: string;
@@ -48,7 +48,7 @@ export interface TaskPayload {
   deliveryStatus: DeliveryStatus;
 }
 
-export interface Note {
+export class Note {
   id: number;
   noteDescription: string;
   noteDate: string;

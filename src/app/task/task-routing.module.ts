@@ -10,9 +10,9 @@ const routes: Routes = [
   { path: "dashboard", component: DashboardComponent, canActivate: [AuthGuard]},
   { path: "tasks", component: TaskListComponent ,canActivate: [AuthGuard]},
   { path: "tasks/create", component: TaskFormComponent ,canActivate: [AuthGuard]},
-  { path: "tasks/edit/:id", component: TaskFormComponent ,canActivate: [AuthGuard]},
-  { path: "tasks/details/:id", component: TaskDetailsComponent,canActivate: [AuthGuard] },
-  { path: "tasks/notes/:id", component: TaskNoteComponent ,canActivate: [AuthGuard]},
+  { path: "tasks/edit/:taskId", component: TaskFormComponent ,canActivate: [AuthGuard]},
+  { path: "tasks/details/:taskId", component: TaskDetailsComponent,canActivate: [AuthGuard] },
+  { path: "tasks/notes/:taskId", component: TaskNoteComponent ,canActivate: [AuthGuard]},
 ];
 @NgModule({ imports: [RouterModule.forChild(routes)], exports: [RouterModule] })
 export class TaskRoutingModule {}

@@ -14,6 +14,7 @@ export class FormBaseComponent extends BaseComponent implements AfterViewInit {
   observer: any;
   notificationMsg: string = "";
   notificationMsgWithParam: string = "";
+  userlParams = new Map<string, any>();
 
 
   constructor(
